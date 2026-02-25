@@ -3,6 +3,7 @@ import { authenticateSpotify, spotifyApi } from './spotify';
 import { initDiscord, updatePresence } from './discord';
 import { downloadTrack } from './downloader';
 import { startServer, updateServerData } from './server';
+import { logPlay } from './logger';
 
 dotenv.config();
 
@@ -55,6 +56,7 @@ async function monitorCurrentlyPlaying() {
                         console.log(`🎵 Now Playing: ${artistName} - ${trackName}`);
 
                         currentSyncStatus = `${artistName} - ${trackName}`;
+                        logPlay({ trackName, artistName, albumName, coverArtUrl, durationMs });
                         await downloadTrack(trackName, artistName, albumName, coverArtUrl);
                         currentSyncStatus = ''; // Reset when done
                     }

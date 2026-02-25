@@ -10,17 +10,19 @@ AuraSync is a premium, silent background engine that bridges your Spotify experi
 - **🌌 Live Ambient Experience**: A stunning, animated full-screen visualizer for your secondary monitor or background.
 - **📡 Background Autopilot**: Runs silently in your system tray. One-click start, one-click stop.
 - **📦 Intelligent Library building**: Automatically downloads your currently playing tracks into a structured `Artist/Album/Song.mp3` local library.
-- ** Persistent Sync**: Remembers your Spotify session automatically across reboots.
+- **📈 Personal Listening Intelligence**: Chronological history logging and play count tracking.
+- **💾 Persistent Sync**: Remembers your Spotify session automatically across reboots.
 
 ---
 
 ## 🚀 Zero-Setup Launch
-AuraSync is designed for zero friction. There are no manual steps or configuration files to edit for others.
+AuraSync is designed for zero friction. There is now just **one single file** to manage everything.
 
-1. **`START_AURASYNC.bat`**: Double-click one time. 
-   - It will silently launch in the background.
-   - It will **automatically configure itself** to run every time your PC turns on.
-2. **`STOP_AURASYNC.bat`**: Stop the service instantly whenever you want.
+1. **`AuraSync.bat`**: Double-click this to open the **Control Center**.
+   - **⚡ Start**: Launches AuraSync silently in the background.
+   - **🛠️ Setup**: Automatically configures AuraSync to run every time your PC turns on.
+   - **🛑 Stop**: Instantly terminates the background service.
+   - **🌐 Visualizer**: Direct link to your live dashboard.
 
 ---
 
@@ -43,9 +45,11 @@ AuraSync isn't just a status updater; it's a **Freedom Engine**.
 
 ## 🔮 Future Roadmap
 - [ ] **Mobile Sync Companion**: Sync your PC library to your mobile device over local Wi-Fi.
+- [x] **Personal Listening Intelligence**: Chronological history and play count tracking (Implemented ✅)
 - [ ] **Custom Plugin API**: Allow developers to build their own "AESTHETIC" presence layouts.
 - [ ] **Global Leaderboards**: See which AuraSync users have the most diverse listening habits.
 - [ ] **AI-Powered Discovery**: Intelligent local library sorting based on your mood.
+- [ ] **Advanced Logging**: Detailed system and activity logs for debugging and insights.
 
 ---
 *AuraSync: Set it once, enjoy forever.*

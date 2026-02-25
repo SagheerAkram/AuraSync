@@ -4,7 +4,7 @@
     "description": "The premium, fully automatic background music daemon that syncs your life with Spotify. Powered by AuraSync.",
     "main": "dist/index.js",
     "scripts": {
-        "start": "node dist/index.js",
+        "start": "ts-node src/index.ts",
         "dev": "ts-node src/index.ts",
         "build": "tsc"
     },

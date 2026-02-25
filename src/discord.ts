@@ -57,11 +57,9 @@ export function updatePresence(
         endTimestamp,
         largeImageKey: coverArtUrl || 'https://raw.githubusercontent.com/SagheerAkram/AuraSync/main/public/logo.png',
         largeImageText: syncStatus ? `📡 Syncing: ${syncStatus}` : `AuraSync Pro | Sync Established`,
-        smallImageKey: syncStatus ? 'https://img.icons8.com/ios-filled/50/ffffff/sync.png' : 'https://img.icons8.com/ios-filled/50/ffffff/play.png',
-        smallImageText: syncStatus ? 'Downloading to Library...' : 'High-Fidelity Audio',
         buttons: [
-            { label: 'View on Spotify', url: trackUrl },
-            { label: 'AuraSync Pro', url: 'https://aurasync.vercel.app/' }
+            { label: '▶️ Play on Spotify', url: trackUrl },
+            { label: '🌐 AuraSync Pro', url: 'https://aurasync.vercel.app/' }
         ],
         instance: false,
     }).catch(err => console.error('Discord RPC Play Error:', err));

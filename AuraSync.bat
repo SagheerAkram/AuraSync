@@ -26,9 +26,10 @@ echo  3. 🌐 OPEN LIVE VISUALIZER (localhost:3333)
 echo  4. 📂 VIEW LOGS
 echo  5. 🔄 FORCE SYNC ^& REPAIR (Clears tokens ^& Resyncs)
 echo  6. 🐛 START IN DEBUG MODE (Visible Window)
-echo  7. ❌ EXIT
+echo  7. 🛡️  ACTIVATE AURASHIELD (Premium Privacy Patch)
+echo  8. ❌ EXIT
 echo.
-set /p choice="Select an option [1-7]: "
+set /p choice="Select an option [1-8]: "
 
 if "%choice%"=="1" goto START_APP
 if "%choice%"=="2" goto STOP_APP
@@ -36,7 +37,8 @@ if "%choice%"=="3" goto OPEN_WEB
 if "%choice%"=="4" goto VIEW_LOGS
 if "%choice%"=="5" goto REPAIR_APP
 if "%choice%"=="6" goto DEBUG_APP
-if "%choice%"=="7" exit
+if "%choice%"=="7" goto AURA_SHIELD
+if "%choice%"=="8" exit
 goto MENU
 
 :START_APP
@@ -93,6 +95,14 @@ echo.
 pushd "%~dp0"
 start "AuraSync_Debug" cmd /k npm start
 popd
+goto MENU
+
+:AURA_SHIELD
+echo.
+echo  🛡️  Initializing AuraShield Privacy Patch...
+echo  (Admin credentials may be required)
+echo.
+call "%~dp0bin\aura_shield.bat"
 goto MENU
 
 :OPEN_WEB

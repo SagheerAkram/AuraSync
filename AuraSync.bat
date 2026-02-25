@@ -75,21 +75,21 @@ echo.
 echo  🛠️  Initiating Deep Repair...
 echo  Stopping active sessions...
 taskkill /F /FI "WINDOWTITLE eq AuraSync_Daemon*" /T >nul 2>&1
+taskkill /F /IM node.exe /T >nul 2>&1
 echo  Clearing cached authentication tokens...
 if exist "%~dp0spotify-tokens.json" del "%~dp0spotify-tokens.json"
 echo  Flushing library cache (safe)...
 echo.
-echo  Success! Next step: Start AuraSync in DEBUG MODE [Option 7] to re-log in.
-timeout /t 5 >nul
+echo  Success! You MUST now select "START IN DEBUG MODE" to log in.
+pause
 goto MENU
 
 :DEBUG_APP
 echo.
-echo  🐛 Starting AuraSync in DEBUG MODE (Visible Window)...
-echo  [!] Use this to see logs or re-authenticate.
-echo  [!] Close the new window to stop the debug session.
-start "AuraSync_Debug" cmd /k "cd /d \"%~dp0bin\" && start.bat"
-timeout /t 3 >nul
+echo  🐛 Starting AuraSync in DEBUG MODE...
+echo  [!] Close the window that opens to stop debugging.
+echo.
+start "AuraSync_Debug" cmd /c "cd /d \"%~dp0bin\" && start.bat"
 goto MENU
 
 :OPEN_WEB

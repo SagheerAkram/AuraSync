@@ -41,8 +41,9 @@ goto MENU
 echo.
 echo  Starting AuraSync in shadow mode...
 start "" wscript "%~dp0bin\run_hidden.vbs"
-timeout /t 2 >nul
-goto MENU
+echo  AuraSync is now monitoring in the background. Exiting...
+timeout /t 3 >nul
+exit
 
 :STOP_APP
 echo.

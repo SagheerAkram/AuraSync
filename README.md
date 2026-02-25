@@ -10,8 +10,7 @@ AuraSync is a premium, silent background engine that bridges your Spotify experi
 - **🌌 Live Ambient Experience**: A stunning, animated full-screen visualizer for your secondary monitor or background.
 - **📡 Background Autopilot**: Runs silently in your system tray. One-click start, one-click stop.
 - **📦 Intelligent Library building**: Automatically downloads your currently playing tracks into a structured `Artist/Album/Song.mp3` local library.
-- **🖼️ Dynamic Wallpaper**: Your desktop wallpaper evolves in real-time as your music changes.
-- **💾 Persistent Sync**: Remembers your Spotify session automatically across reboots.
+- ** Persistent Sync**: Remembers your Spotify session automatically across reboots.
 
 ---
 

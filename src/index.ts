@@ -2,7 +2,6 @@ import dotenv from 'dotenv';
 import { authenticateSpotify, spotifyApi } from './spotify';
 import { initDiscord, updatePresence } from './discord';
 import { downloadTrack } from './downloader';
-import { updateWallpaper } from './wallpaper';
 import { startServer, updateServerData } from './server';
 
 dotenv.config();
@@ -58,10 +57,6 @@ async function monitorCurrentlyPlaying() {
                         currentSyncStatus = `${artistName} - ${trackName}`;
                         await downloadTrack(trackName, artistName, albumName, coverArtUrl);
                         currentSyncStatus = ''; // Reset when done
-
-                        if (coverArtUrl) {
-                            updateWallpaper(coverArtUrl);
-                        }
                     }
                 }
             }

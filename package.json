@@ -17,7 +17,6 @@
         "sanitize-filename": "^1.6.3",
         "sharp": "^0.34.5",
         "spotify-web-api-node": "^5.0.2",
-        "wallpaper": "^7.2.1",
         "yt-dlp-exec": "^1.0.2"
     },
     "devDependencies": {

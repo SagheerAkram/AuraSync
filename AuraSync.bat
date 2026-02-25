@@ -42,6 +42,7 @@ goto MENU
 :START_APP
 echo.
 echo  Configuring persistent background service...
+pushd "%~dp0"
 set "STARTUP_FOLDER=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup"
 set "STARTUP_VBS=%STARTUP_FOLDER%\AuraSyncStartup.vbs"
 
@@ -56,6 +57,7 @@ echo Set WshShell = Nothing >> "%STARTUP_VBS%"
 
 echo  Starting AuraSync in shadow mode...
 start "" wscript "%~dp0bin\run_hidden.vbs"
+popd
 echo.
 echo  Success! AuraSync is now running ^& set to launch on boot.
 timeout /t 3 >nul
@@ -78,18 +80,19 @@ taskkill /F /FI "WINDOWTITLE eq AuraSync_Daemon*" /T >nul 2>&1
 taskkill /F /IM node.exe /T >nul 2>&1
 echo  Clearing cached authentication tokens...
 if exist "%~dp0spotify-tokens.json" del "%~dp0spotify-tokens.json"
-echo  Flushing library cache (safe)...
 echo.
-echo  Success! You MUST now select "START IN DEBUG MODE" to log in.
+echo  [!] Success! You MUST now select "START IN DEBUG MODE" to log in.
 pause
 goto MENU
 
 :DEBUG_APP
 echo.
 echo  🐛 Starting AuraSync in DEBUG MODE...
-echo  [!] Close the window that opens to stop debugging.
+echo  [!] Close the new window to stop debugging.
 echo.
-start "AuraSync_Debug" cmd /c "cd /d \"%~dp0bin\" && start.bat"
+pushd "%~dp0"
+start "AuraSync_Debug" cmd /k npm start
+popd
 goto MENU
 
 :OPEN_WEB

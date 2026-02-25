@@ -7,7 +7,7 @@ title AuraSync Control Center
 cls
 echo.
 echo  ======================================================
-echo     🌌 AuraSync | Ultra-Premium Control Center v%VERSION%
+echo     🌌 AuraSync ^| Ultra-Premium Control Center v%VERSION%
 echo  ======================================================
 echo.
 

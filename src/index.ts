@@ -17,7 +17,6 @@ async function monitorCurrentlyPlaying() {
     setInterval(async () => {
         try {
             const data = await spotifyApi.getMyCurrentPlayingTrack();
-            const queueData = await (spotifyApi as any).getQueue().catch(() => null); // getQueue might not be in all TS types
 
             if (data.body && data.body.item) {
                 // @ts-ignore
@@ -39,11 +38,7 @@ async function monitorCurrentlyPlaying() {
                     // @ts-ignore
                     const trackUrl = track.external_urls.spotify;
 
-                    // Get next track name
                     let nextUp = '';
-                    if (queueData && queueData.body && queueData.body.queue && queueData.body.queue.length > 0) {
-                        nextUp = `${queueData.body.queue[0].name} ┃ ${queueData.body.queue[0].artists[0].name}`;
-                    }
 
                     // Update presence every poll to keep timestamps/pause state in sync
                     updatePresence(trackName, artistName, albumName, progressMs, durationMs, isPlaying, trackUrl, currentSyncStatus, nextUp, coverArtUrl);

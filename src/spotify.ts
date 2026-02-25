@@ -54,7 +54,15 @@ export async function authenticateSpotify(): Promise<boolean> {
         const app = express();
         let server: any;
 
-        const scopes = ['user-read-currently-playing', 'user-read-recently-played', 'playlist-read-private', 'playlist-read-collaborative'];
+        const scopes = [
+            'user-read-currently-playing',
+            'user-read-recently-played',
+            'playlist-read-private',
+            'playlist-read-collaborative',
+            'user-modify-playback-state',
+            'user-library-read',
+            'user-read-private'
+        ];
         const authorizeURL = spotifyApi.createAuthorizeURL(scopes, 'state-musical-music');
 
         app.get('/callback', async (req: express.Request, res: express.Response) => {
@@ -216,4 +224,24 @@ async function refreshAccessToken() {
     } catch (error) {
         console.error('Could not refresh access token', error);
     }
+}
+
+export async function pauseTrack() {
+    return spotifyApi.pause().catch(err => console.error('Spotify Pause Error:', err.message));
+}
+
+export async function playTrack() {
+    return spotifyApi.play().catch(err => console.error('Spotify Play Error:', err.message));
+}
+
+export async function skipNext() {
+    return spotifyApi.skipToNext().catch(err => console.error('Spotify Skip Error:', err.message));
+}
+
+export async function skipPrevious() {
+    return spotifyApi.skipToPrevious().catch(err => console.error('Spotify Prev Error:', err.message));
+}
+
+export async function seekTrack(positionMs: number) {
+    return spotifyApi.seek(positionMs).catch(err => console.error('Spotify Seek Error:', err.message));
 }

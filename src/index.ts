@@ -1,29 +1,73 @@
 import dotenv from 'dotenv';
-import { authenticateSpotify, spotifyApi } from './spotify';
-import { initDiscord, updatePresence } from './discord';
+import { authenticateSpotify, spotifyApi, seekTrack } from './spotify';
 import { downloadTrack } from './downloader';
-import { startServer, updateServerData } from './server';
 import { logPlay } from './logger';
+import fs from 'fs';
+import path from 'path';
+import { detectAd, jumpAd } from './aurajump';
 
 dotenv.config();
 
-const POLL_INTERVAL = 10000; // Poll Spotify every 10 seconds
+const POLL_INTERVAL = 500;
 
-let currentSyncStatus = '';
+// Robust Path Resolution (Using CWD to ensure consistency with .bat launchers)
+const PROJECT_ROOT = process.cwd();
+const SEEK_SIGNAL_PATH = path.join(PROJECT_ROOT, '.seek_signal');
+const LOCK_FILE_PATH = path.join(PROJECT_ROOT, '.aura_lock');
+const SYNC_LOG_PATH = path.join(PROJECT_ROOT, 'sync_debug.log');
+const PLAYLISTS_ROOT = path.join(PROJECT_ROOT, 'Playlists');
+const LIBRARY_PATH = path.join(PROJECT_ROOT, 'library');
+
+let currentTrackDurationMs = 0;
+
+function logSync(msg: string) {
+    const timestamp = new Date().toISOString();
+    try {
+        fs.appendFileSync(SYNC_LOG_PATH, `[${timestamp}] ${msg}\n`);
+    } catch (e) { }
+    console.log(msg);
+}
+
+function createLock() {
+    if (fs.existsSync(LOCK_FILE_PATH)) {
+        const pid = fs.readFileSync(LOCK_FILE_PATH, 'utf8');
+        try {
+            process.kill(parseInt(pid), 0);
+            logSync('⚠️ AuraSync Elite is already active (PID: ' + pid + '). Resource Guard engaged.');
+            process.exit(0);
+        } catch (e) {
+            try { fs.unlinkSync(LOCK_FILE_PATH); } catch (err) { }
+        }
+    }
+    fs.writeFileSync(LOCK_FILE_PATH, process.pid.toString());
+}
+
+function removeLock() {
+    try {
+        if (fs.existsSync(LOCK_FILE_PATH)) fs.unlinkSync(LOCK_FILE_PATH);
+    } catch (e) { }
+}
+
+process.on('SIGINT', () => { removeLock(); process.exit(); });
+process.on('SIGTERM', () => { removeLock(); process.exit(); });
+process.on('exit', () => removeLock());
 
 async function monitorCurrentlyPlaying() {
     let lastTrackId = '';
 
     setInterval(async () => {
         try {
+            const isAd = await detectAd();
+            if (isAd) {
+                await jumpAd();
+                return;
+            }
+
             const data = await spotifyApi.getMyCurrentPlayingTrack();
 
             if (data.body && data.body.item) {
                 // @ts-ignore
                 const track = data.body.item;
-                const isPlaying = data.body.is_playing;
-                const progressMs = data.body.progress_ms || 0;
-                // @ts-ignore
                 const durationMs = track.duration_ms;
                 const trackId = track.id;
 
@@ -35,92 +79,129 @@ async function monitorCurrentlyPlaying() {
                     const albumName = track.album.name;
                     // @ts-ignore
                     const coverArtUrl = track.album.images?.[0]?.url;
-                    // @ts-ignore
-                    const trackUrl = track.external_urls.spotify;
 
-                    let nextUp = '';
-
-                    // Update presence every poll to keep timestamps/pause state in sync
-                    updatePresence(trackName, artistName, albumName, progressMs, durationMs, isPlaying, trackUrl, currentSyncStatus, nextUp, coverArtUrl);
-
-                    // Update live visualizer dashboard
-                    updateServerData({ trackName, artistName, albumName, coverArtUrl, trackUrl, progressMs, durationMs, isPlaying });
+                    currentTrackDurationMs = durationMs;
 
                     if (trackId !== lastTrackId) {
                         lastTrackId = trackId;
                         console.log(`🎵 Now Playing: ${artistName} - ${trackName}`);
-
-                        currentSyncStatus = `${artistName} - ${trackName}`;
                         logPlay({ trackName, artistName, albumName, coverArtUrl, durationMs });
                         await downloadTrack(trackName, artistName, albumName, coverArtUrl);
-                        currentSyncStatus = ''; // Reset when done
                     }
                 }
             }
         } catch (error) {
-            console.error('Error polling currently playing track:', error);
+            // Silently handle polling errors
         }
+
+        try {
+            if (fs.existsSync(SEEK_SIGNAL_PATH)) {
+                const signal = fs.readFileSync(SEEK_SIGNAL_PATH, 'utf8').trim();
+                const percent = parseFloat(signal);
+                if (!isNaN(percent) && currentTrackDurationMs > 0) {
+                    const targetMs = Math.floor(currentTrackDurationMs * percent);
+                    console.log(`🎯 Shadow Scrubber: Seeking to ${targetMs}ms`);
+                    await seekTrack(targetMs);
+                }
+                try { fs.unlinkSync(SEEK_SIGNAL_PATH); } catch (e) { }
+            }
+        } catch (seekErr) { }
     }, POLL_INTERVAL);
 }
 
+async function syncFullLibrary() {
+    try {
+        logSync('📚 Syncing "Saved Tracks" archive...');
+        let offset = 0;
+        let total = 1;
+        while (offset < total) {
+            const data = await spotifyApi.getMySavedTracks({ limit: 50, offset });
+            total = data.body.total;
+            for (const item of data.body.items) {
+                const track = item.track;
+                await downloadTrack(track.name, track.artists[0].name, track.album.name, track.album.images?.[0]?.url);
+            }
+            offset += 50;
+        }
+        logSync('✅ Full Library archived successfully.');
+    } catch (error: any) {
+        logSync('❌ Library Sync Error: ' + error.message);
+    }
+}
+
+async function syncUserPlaylists() {
+    logSync('🔄 Initiating Elite Playlist Sync...');
+    try {
+        if (!fs.existsSync(PLAYLISTS_ROOT)) {
+            logSync('📂 Creating root Playlists directory...');
+            fs.mkdirSync(PLAYLISTS_ROOT, { recursive: true });
+        }
+
+        let pOffset = 0;
+        let pTotal = 1;
+        while (pOffset < pTotal) {
+            logSync(`📡 Fetching playlists (Offset: ${pOffset})...`);
+            const pData = await spotifyApi.getUserPlaylists({ limit: 20, offset: pOffset });
+            pTotal = pData.body.total;
+            logSync(`📊 Total Playlists Found: ${pTotal}`);
+
+            for (const playlist of pData.body.items) {
+                logSync(`📂 Processing Playlist: ${playlist.name} (ID: ${playlist.id})`);
+                let tOffset = 0;
+                let tTotal = 1;
+                while (tOffset < tTotal) {
+                    const tData = await spotifyApi.getPlaylistTracks(playlist.id, { limit: 50, offset: tOffset });
+                    tTotal = tData.body.total;
+                    for (const item of tData.body.items) {
+                        const track = item.track;
+                        if (track && track.type === 'track') {
+                            // @ts-ignore
+                            await downloadTrack(track.name, track.artists[0].name, track.album.name, track.album.images?.[0]?.url, playlist.name);
+                        }
+                    }
+                    tOffset += 50;
+                }
+                logSync(`✅ Syncing Finished for: ${playlist.name}`);
+            }
+            pOffset += pData.body.items.length;
+            if (pData.body.items.length === 0) break;
+        }
+        logSync('✨ Elite Playlist Mirroring complete.');
+    } catch (error: any) {
+        logSync('❌ Playlist Sync Error: ' + error.message);
+    }
+}
+
 async function main() {
-    console.log('Starting AuraSync Daemon...');
+    // Delete old debug log on fresh start
+    if (fs.existsSync(SYNC_LOG_PATH)) {
+        try { fs.unlinkSync(SYNC_LOG_PATH); } catch (e) { }
+    }
+
+    createLock();
+    logSync('🌌 AuraSync Elite: Starting Professional Suite...');
 
     if (!process.env.SPOTIFY_CLIENT_ID || !process.env.SPOTIFY_CLIENT_SECRET) {
-        console.error('❌ Missing SPOTIFY_CLIENT_ID or SPOTIFY_CLIENT_SECRET in .env file.');
-        console.error('Please create a .env file and add your Spotify developer keys.');
+        logSync('❌ ERROR: Missing Spotify Credentials in .env');
         process.exit(1);
     }
 
-    // 1. Authenticate Spotify
-    await authenticateSpotify();
-
-    // 2. Initialize Discord RPC
-    await initDiscord();
-
-    // Sync full library before polling
-    await syncFullLibrary();
-
-    // 3. Start Live Experience Server
-    startServer();
-
-    // 4. Start Polling
-    console.log('🎧 Monitoring Spotify for listening activity...');
-    monitorCurrentlyPlaying();
-}
-
-async function syncFullLibrary() {
-    console.log('🔄 Checking if full library sync is needed...');
-    // We only want to sync heavily on first run (we'll just use a dumb simple check, like if the artist table exists/is empty. Actually, let's just do a manual blast. If files exist, yt-dlp skips them anyway)
     try {
-        console.log('📚 Fetching your "Saved Tracks" from Spotify...');
-        const limit = 50;
-        let offset = 0;
-        let total = 1; // dummy initial value to enter loop
+        logSync('🔑 Authenticating with Spotify...');
+        await authenticateSpotify();
 
-        // This is a simplified "sync". It will fetch the latest saved tracks.
-        while (offset < total) {
-            const data = await spotifyApi.getMySavedTracks({ limit, offset });
-            total = data.body.total;
-            const tracks = data.body.items;
+        // Parallel sync
+        logSync('📡 Starting parallel library and playlist mirroring...');
+        syncUserPlaylists();
+        syncFullLibrary();
 
-            for (const item of tracks) {
-                const track = item.track;
-                const trackName = track.name;
-                const artistName = track.artists[0].name;
-                const albumName = track.album.name;
-                // Get highest res image
-                const coverArtUrl = track.album.images.length > 0 ? track.album.images[0].url : undefined;
-
-                // Queue the download (it skips if exists)
-                await downloadTrack(trackName, artistName, albumName, coverArtUrl);
-            }
-            offset += limit;
-        }
-
-    } catch (error) {
-        console.error('Failed to sync full library:', error);
+        logSync('🎧 Elite Monitoring Active. Audio Fidelity Engaged.');
+        monitorCurrentlyPlaying();
+    } catch (err: any) {
+        logSync('❌ CRITICAL ENGINE FAILURE: ' + err.message);
     }
 }
 
-main().catch(console.error);
+main().catch((err) => {
+    logSync('❌ FATAL ERROR: ' + err.message);
+});

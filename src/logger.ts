@@ -50,7 +50,8 @@ export function logPlay(track: TrackInfo): void {
         counts[key] = (counts[key] || 0) + 1;
         fs.writeFileSync(COUNTS_FILE, JSON.stringify(counts, null, 2), 'utf-8');
 
-        console.log(`📝 Logged: "${key}" (${counts[key]}x played)`);
+        // Silent background logging for future surprises
+        // console.log(`📝 Logged: "${key}" (${counts[key]}x played)`);
     } catch (error) {
         console.error('Failed to write log:', error);
     }

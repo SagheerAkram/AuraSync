@@ -1,6 +1,6 @@
 {
     "name": "aurasync",
-    "version": "1.0.0",
+    "version": "2.0.0-ELITE",
     "description": "The premium, fully automatic background music daemon that syncs your life with Spotify. Powered by AuraSync.",
     "main": "dist/index.js",
     "scripts": {

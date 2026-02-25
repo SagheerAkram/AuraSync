@@ -1,120 +1,114 @@
 @echo off
-chcp 65001 >nul
-setlocal
-set "VERSION=1.2.0"
-title AuraSync Control Center
+:: ======================================================
+::  AuraSync Elite | Emergency Stability Patch
+:: ======================================================
+set VERSION=2.0.0-ELITE
 
-:MENU
-cls
+:: Ensure we are in the correct directory
+cd /d "%~dp0"
+
 echo.
-echo  ======================================================
-echo     🌌 AuraSync ^| Ultra-Premium Control Center v%VERSION%
-echo  ======================================================
+echo  --------------------------------------------------
+echo     AuraSync Elite ^| One-Click Initialization
+echo  --------------------------------------------------
 echo.
 
-:: Check if running
-tasklist /FI "WINDOWTITLE eq AuraSync_Daemon*" | find "node.exe" >nul
-if %errorlevel% equ 0 (
-    echo  [!] STATUS: ACTIVE (Running in Background)
-) else (
-    echo  [ ] STATUS: INACTIVE
-)
-echo.
-echo  1. ⚡ START AURASYNC (Background + Auto-Startup)
-echo  2. 🛑 STOP AURASYNC
-echo  3. 🌐 OPEN LIVE VISUALIZER (localhost:3333)
-echo  4. 📂 VIEW LOGS
-echo  5. 🔄 FORCE SYNC ^& REPAIR (Clears tokens ^& Resyncs)
-echo  6. 🐛 START IN DEBUG MODE (Visible Window)
-echo  7. 🛡️  ACTIVATE AURASHIELD (Premium Privacy Patch)
-echo  8. ❌ EXIT
-echo.
-set /p choice="Select an option [1-8]: "
+:: 1. Diagnostic Start (Stops the flicker)
+echo [1/4] Calibrating Environment...
 
-if "%choice%"=="1" goto START_APP
-if "%choice%"=="2" goto STOP_APP
-if "%choice%"=="3" goto OPEN_WEB
-if "%choice%"=="4" goto VIEW_LOGS
-if "%choice%"=="5" goto REPAIR_APP
-if "%choice%"=="6" goto DEBUG_APP
-if "%choice%"=="7" goto AURA_SHIELD
-if "%choice%"=="8" exit
-goto MENU
+:: Check Node
+node -v >nul 2>&1
+if %errorlevel% equ 0 goto :NODE_OK
 
-:START_APP
-echo.
-echo  Configuring persistent background service...
-pushd "%~dp0"
-set "STARTUP_FOLDER=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup"
-set "STARTUP_VBS=%STARTUP_FOLDER%\AuraSyncStartup.vbs"
+:: Attempt Winget
+echo [!] Node.js missing. Attempting Elite Auto-Install...
+winget -v >nul 2>&1
+if %errorlevel% neq 0 goto :WINGET_MISSING
 
-:: Cleanup old shortcut if exists
-if exist "%STARTUP_FOLDER%\AuraSync.lnk" del "%STARTUP_FOLDER%\AuraSync.lnk"
-
-:: Write fresh unblockable VBS
-echo Set WshShell = CreateObject^("WScript.Shell"^) > "%STARTUP_VBS%"
-echo WshShell.CurrentDirectory = "%~dp0" >> "%STARTUP_VBS%"
-echo WshShell.Run chr^(34^) ^& "%~dp0bin\start.bat" ^& Chr^(34^), 0 >> "%STARTUP_VBS%"
-echo Set WshShell = Nothing >> "%STARTUP_VBS%"
-
-echo  Starting AuraSync in shadow mode...
-start "" wscript "%~dp0bin\run_hidden.vbs"
-popd
-echo.
-echo  Success! AuraSync is now running ^& set to launch on boot.
-timeout /t 3 >nul
+winget install OpenJS.NodeJS.LTS --silent --accept-package-agreements --accept-source-agreements
+if %errorlevel% neq 0 goto :INSTALL_FAIL
+echo [+] Node.js installed. Please restart this script.
+pause
 exit
 
-:STOP_APP
-echo.
-echo  Terminating AuraSync background process...
-taskkill /f /fi "WINDOWTITLE eq AuraSync_Daemon*" /im node.exe >nul 2>&1
-echo  Done.
-timeout /t 2 >nul
-goto MENU
-
-
-:REPAIR_APP
-echo.
-echo  🛠️  Initiating Deep Repair...
-echo  Stopping active sessions...
-taskkill /F /FI "WINDOWTITLE eq AuraSync_Daemon*" /T >nul 2>&1
-taskkill /F /IM node.exe /T >nul 2>&1
-echo  Clearing cached authentication tokens...
-if exist "%~dp0spotify-tokens.json" del "%~dp0spotify-tokens.json"
-echo.
-echo  [!] Success! You MUST now select "START IN DEBUG MODE" to log in.
+:WINGET_MISSING
+echo [X] Winget not found. Please install Node.js manually.
+echo Download: https://nodejs.org/
 pause
-goto MENU
+exit
 
-:DEBUG_APP
-echo.
-echo  🐛 Starting AuraSync in DEBUG MODE...
-echo  [!] Close the new window to stop debugging.
-echo.
-pushd "%~dp0"
-start "AuraSync_Debug" cmd /k npm start
-popd
-goto MENU
+:INSTALL_FAIL
+echo [X] Auto-Install failed. Please install Node.js manually.
+pause
+exit
 
-:AURA_SHIELD
-echo.
-echo  🛡️  Initializing AuraShield Privacy Patch...
-echo  (Admin credentials may be required)
-echo.
-call "%~dp0bin\aura_shield.bat"
-goto MENU
+:NODE_OK
+echo [+] Node.js Runtime detected.
 
-:OPEN_WEB
-start http://localhost:3333
-goto MENU
-
-:VIEW_LOGS
-if exist "%~dp0logs\listen_history.jsonl" (
-    start notepad "%~dp0logs\listen_history.jsonl"
-) else (
-    echo.
-    echo  [!] No history data found yet.
-    timeout /t 2 >nul
+:: 2. Requirements Check
+if exist "node_modules\." goto :MODULES_OK
+echo [2/4] Syncing Elite Requirements (First Run)...
+call npm install --silent
+if %errorlevel% neq 0 (
+    echo [X] npm install failed. Check your internet connection.
+    pause
+    exit
 )
-goto MENU
+:MODULES_OK
+echo [+] Requirements: OK.
+
+:: 3. Sanitation
+echo [3/4] Purging Ghost Instances...
+taskkill /f /im node.exe >nul 2>&1
+taskkill /f /fi "WINDOWTITLE eq AuraSync*" >nul 2>&1
+powershell -Command "Get-Process | Where-Object { $_.CommandLine -like '*shadow_scrubber.ps1*' } | Stop-Process -Force" >nul 2>&1
+if exist ".aura_lock" del /f /q ".aura_lock" >nul 2>&1
+
+:: 4. Final Validation & Launch
+echo [4/4] Activating Fidelity Shield...
+
+:: Critical Check: .env
+if exist ".env" goto :ENV_OK
+echo [X] ERROR: Configuration (.env) missing.
+pause
+exit
+
+:ENV_OK
+:: Critical Check: Admin
+net session >nul 2>&1
+if %errorlevel% neq 0 (
+    echo [X] ERROR: Admin Rights Required.
+    echo Right-click and "Run as Administrator".
+    pause
+    exit
+)
+
+:: Apply Hosts patch
+call "bin\aura_shield.bat" >nul 2>&1
+echo [+] Patching: SUCCESS.
+
+:: Establishing Daemon
+set "STARTUP_VBS=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\AuraSyncStartup.vbs"
+(
+echo Set WshShell = CreateObject("WScript.Shell")
+echo WshShell.CurrentDirectory = "%~dp0"
+echo WshShell.Run chr(34) ^& "%~dp0bin\start.bat" ^& Chr(34), 0
+echo Set WshShell = Nothing
+) > "%STARTUP_VBS%"
+
+:: Run hidden
+start "" wscript "bin\run_hidden.vbs"
+
+:: Run scrubber
+start "" /min powershell -WindowStyle Hidden -Command "%~dp0bin\shadow_scrubber.ps1"
+
+echo.
+echo ======================================================
+echo    ELITE STATUS: ACTIVE
+echo    AuraSync is now running in the background.
+echo    Your Spotify experience is now optimized.
+echo ======================================================
+echo.
+echo Closing in 10 seconds (or press any key to close now)...
+timeout /t 10
+exit

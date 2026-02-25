@@ -4,12 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AuraSync Live Ambient</title>
+    <title>AuraSync Premium Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --accent-color: #1DB954;
             --bg-color: #0c0c0c;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
         body,
@@ -22,6 +24,7 @@
             font-family: 'Outfit', sans-serif;
             background-color: var(--bg-color);
             color: white;
+            user-select: none;
         }
 
         /* Ambient Background Blobs */
@@ -29,32 +32,32 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            filter: blur(100px);
+            filter: blur(120px);
             z-index: -1;
-            opacity: 0.6;
+            opacity: 0.5;
         }
 
         .blob {
             position: absolute;
             border-radius: 50%;
-            animation: move 20s infinite alternate;
+            animation: move 25s infinite alternate ease-in-out;
         }
 
         .blob-1 {
-            width: 500px;
-            height: 500px;
-            background: rgba(29, 185, 84, 0.3);
-            top: -100px;
+            width: 600px;
+            height: 600px;
+            background: rgba(29, 185, 84, 0.25);
+            top: -150px;
             left: -100px;
         }
 
         .blob-2 {
-            width: 600px;
-            height: 600px;
-            background: rgba(100, 0, 255, 0.2);
-            bottom: -150px;
+            width: 700px;
+            height: 700px;
+            background: rgba(100, 0, 255, 0.15);
+            bottom: -200px;
             right: -100px;
-            animation-duration: 25s;
+            animation-duration: 30s;
         }
 
         @keyframes move {
@@ -63,7 +66,7 @@
             }
 
             to {
-                transform: translate(200px, 100px) scale(1.2);
+                transform: translate(150px, 80px) scale(1.1);
             }
         }
 
@@ -74,125 +77,225 @@
             align-items: center;
             justify-content: center;
             height: 100%;
-            backdrop-filter: blur(5px);
-            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            background: radial-gradient(circle at center, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.6) 100%);
         }
 
         .glass-panel {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 40px;
-            padding: 60px;
+            background: var(--glass);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            padding: 50px 70px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            max-width: 80%;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 550px;
         }
 
         .album-art-container {
             position: relative;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
+            perspective: 1000px;
         }
 
         .album-art {
-            width: 350px;
-            height: 350px;
-            border-radius: 24px;
+            width: 380px;
+            height: 380px;
+            border-radius: 30px;
             object-fit: cover;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            transition: transform 0.5s ease;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .album-art.playing {
-            animation: pulse 4s infinite ease-in-out;
+            animation: breathe 8s infinite alternate ease-in-out;
         }
 
-        @keyframes pulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        @keyframes breathe {
+            0% {
+                transform: scale(1) rotate(0deg);
             }
 
-            50% {
-                transform: scale(1.03);
-                box-shadow: 0 30px 60px rgba(29, 185, 84, 0.2);
+            100% {
+                transform: scale(1.04) rotate(1deg);
             }
         }
 
         .track-info {
             text-align: center;
+            margin-top: 10px;
         }
 
         .track-name {
-            font-size: 3rem;
+            font-size: 2.8rem;
             font-weight: 600;
             margin: 0;
-            letter-spacing: -1px;
-            background: linear-gradient(to right, #fff, #aaa);
+            letter-spacing: -1.5px;
+            background: linear-gradient(to right, #fff 0%, #aaa 100%);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .artist-name {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 300;
-            color: rgba(255, 255, 255, 0.6);
-            margin-top: 10px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 5px;
+            letter-spacing: 1px;
         }
 
-        /* Progress Bar */
-        .progress-container {
-            width: 500px;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            margin-top: 40px;
-            overflow: hidden;
+        /* Magic Scrubber */
+        .scrubber-container {
+            width: 100%;
+            margin-top: 35px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .time-label {
+            font-size: 0.75rem;
+            font-family: monospace;
+            color: rgba(255, 255, 255, 0.4);
+            min-width: 45px;
+        }
+
+        .progress-hitbox {
+            flex-grow: 1;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
             position: relative;
         }
 
-        .progress-bar {
+        .progress-background {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
             height: 100%;
             background: var(--accent-color);
             width: 0%;
-            transition: width 0.5s ease;
-            box-shadow: 0 0 20px var(--accent-color);
+            border-radius: 2px;
+            box-shadow: 0 0 15px var(--accent-color);
+            transition: width 0.2s linear;
         }
 
-        /* Grainy Overlay */
-        .grain {
+        .seeker-dot {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url("https://grainy-gradients.vercel.app/noise.svg");
-            opacity: 0.05;
-            pointer-events: none;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            left: 0%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .progress-hitbox:hover .seeker-dot {
+            opacity: 1;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin-top: 40px;
+            opacity: 0.2;
+            transition: opacity 0.3s ease;
+        }
+
+        .glass-panel:hover .controls {
+            opacity: 1;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-btn:hover {
+            opacity: 1;
+            transform: scale(1.2);
+            color: var(--accent-color);
+        }
+
+        .play-btn {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 50%;
+            color: black;
+            opacity: 1;
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .play-btn:hover {
+            background: var(--accent-color);
+            color: white;
+            box-shadow: 0 15px 30px rgba(29, 185, 84, 0.4);
         }
 
         #status-pill {
-            margin-bottom: 20px;
-            padding: 8px 16px;
-            background: rgba(29, 185, 84, 0.1);
+            margin-bottom: 25px;
+            padding: 10px 20px;
+            background: rgba(29, 185, 84, 0.05);
             color: var(--accent-color);
-            border-radius: 20px;
-            font-size: 0.8rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             font-weight: 600;
-            border: 1px solid rgba(29, 185, 84, 0.2);
+            border: 1px solid rgba(29, 185, 84, 0.1);
+            animation: fadeIn 1s forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .premium-tag {
+            font-size: 0.6rem;
+            background: linear-gradient(45deg, #f3ec78, #af4261);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 10px;
+            vertical-align: middle;
+            color: white;
+            font-weight: 900;
         }
 
         .hidden {
-            opacity: 0;
-            transform: translateY(20px);
+            display: none !important;
         }
     </style>
 </head>
@@ -202,31 +305,79 @@
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
     </div>
-    <div class="grain"></div>
 
-    <div class="container">
-        <div id="status-pill">AuraSync Live</div>
+    <div class="container" id="main-container">
+        <div id="status-pill">AuraSync Premium Hub</div>
         <div id="player-panel" class="glass-panel hidden">
             <div class="album-art-container">
                 <img id="art" class="album-art" src="" alt="Album Art">
             </div>
             <div class="track-info">
-                <h1 id="track" class="track-name">Loading Experience...</h1>
+                <h1 class="track-name"><span id="track">Loading...</span><span class="premium-tag">PRO</span></h1>
                 <div id="artist" class="artist-name">Synchronizing with Spotify</div>
             </div>
-            <div class="progress-container">
-                <div id="progress" class="progress-bar"></div>
+
+            <div class="scrubber-container">
+                <span class="time-label" id="time-current">0:00</span>
+                <div class="progress-hitbox" id="scrubber">
+                    <div class="progress-background">
+                        <div id="progress" class="progress-fill"></div>
+                    </div>
+                    <div id="seeker" class="seeker-dot"></div>
+                </div>
+                <span class="time-label" id="time-total">0:00</span>
+            </div>
+
+            <div class="controls">
+                <button class="control-btn" onclick="controlAction('skip/prev')">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
+                    </svg>
+                </button>
+                <button id="play-pause" class="control-btn play-btn" onclick="togglePlay()">
+                    <svg id="play-icon" width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8 5v14l11-7z" />
+                    </svg>
+                    <svg id="pause-icon" class="hidden" width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                    </svg>
+                </button>
+                <button class="control-btn" onclick="controlAction('skip/next')">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+                    </svg>
+                </button>
             </div>
         </div>
     </div>
 
     <script>
-        let currentTrackId = '';
+        let currentStatus = null;
+
+        function formatTime(ms) {
+            const sec = Math.floor(ms / 1000);
+            const m = Math.floor(sec / 60);
+            const s = Math.floor(sec % 60);
+            return `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        async function controlAction(action) {
+            try {
+                await fetch(`/api/${action}`, { method: 'POST' });
+                setTimeout(updateData, 500);
+            } catch (e) { console.error(e); }
+        }
+
+        async function togglePlay() {
+            const action = currentStatus?.isPlaying ? 'pause' : 'play';
+            await controlAction(action);
+        }
 
         async function updateData() {
             try {
                 const res = await fetch('/api/status');
                 const data = await res.json();
+                currentStatus = data;
 
                 if (!data.trackName) {
                     document.getElementById('player-panel').classList.add('hidden');
@@ -235,28 +386,48 @@
 
                 document.getElementById('player-panel').classList.remove('hidden');
                 document.getElementById('track').innerText = data.trackName;
-                document.getElementById('artist').innerText = data.artistName + ' | ' + data.albumName;
+                document.getElementById('artist').innerText = data.artistName + ' ┃ ' + data.albumName;
 
                 const art = document.getElementById('art');
-                if (art.src !== data.coverArtUrl) {
-                    art.src = data.coverArtUrl;
-                }
+                if (art.src !== data.coverArtUrl) art.src = data.coverArtUrl;
 
                 if (data.isPlaying) {
                     art.classList.add('playing');
+                    document.getElementById('play-icon').classList.add('hidden');
+                    document.getElementById('pause-icon').classList.remove('hidden');
                 } else {
                     art.classList.remove('playing');
+                    document.getElementById('play-icon').classList.remove('hidden');
+                    document.getElementById('pause-icon').classList.add('hidden');
                 }
 
                 const pct = (data.progressMs / data.durationMs) * 100;
                 document.getElementById('progress').style.width = pct + '%';
+                document.getElementById('seeker').style.left = pct + '%';
+
+                document.getElementById('time-current').innerText = formatTime(data.progressMs);
+                document.getElementById('time-total').innerText = formatTime(data.durationMs);
 
             } catch (e) {
-                console.error("Connection lost to AuraSync daemon.");
+                console.error("Daemon connection issue.");
             }
         }
 
-        setInterval(updateData, 2000);
+        // Magic Scrubber
+        document.getElementById('scrubber').addEventListener('click', async (e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const pct = x / rect.width;
+            const targetMs = Math.floor(pct * currentStatus.durationMs);
+
+            // Instant feedback
+            document.getElementById('progress').style.width = (pct * 100) + '%';
+            document.getElementById('seeker').style.left = (pct * 100) + '%';
+
+            await fetch(`/api/seek?positionMs=${targetMs}`, { method: 'POST' });
+        });
+
+        setInterval(updateData, 1500);
         updateData();
     </script>
 </body>

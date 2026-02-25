@@ -1,56 +1,49 @@
-# 🌌 AuraSync
-> **The High-Fidelity Spotify Shadow-Daemon**
+# AuraSync Elite v2.0.0-ELITE 🌌🛡️🚀
+> **Experience Unlimited Spotify Premium Features — 100% Free. 100% Silent.**
 
-AuraSync is a premium, silent background engine that bridges your Spotify experience with your local machine and Discord. It automatically builds a local high-quality library of your listening history while broadcasting a state-of-the-art status to your friends.
-
----
-
-## ✨ Features
-- **👑 Ultra-Premium Discord RPC**: Real-time progress, upcoming queue tracking, and dynamic sync status.
-- **🌌 Live Ambient Experience**: A stunning, animated full-screen visualizer for your secondary monitor or background.
-- **📡 Background Autopilot**: Runs silently in your system tray. One-click start, one-click stop.
-- **📦 Intelligent Library building**: Automatically downloads your currently playing tracks into a structured `Artist/Album/Song.mp3` local library.
-- **📈 Personal Listening Intelligence**: Chronological history logging and play count tracking.
-- **💾 Persistent Sync**: Remembers your Spotify session automatically across reboots.
+AuraSync is an **Elite Optimization Suite** that bypasses every major restriction on Spotify Free. It runs invisibly in the background, transforming your standard Spotify app into a high-fidelity, high-freedom professional machine.
 
 ---
 
-## 🚀 Zero-Setup Launch
-AuraSync is designed for zero friction. There is now just **one single file** to manage everything.
+## 💎 The Elite Value Proposition
+AuraSync isn't just an "add-on"—it's a total re-engineering of your Spotify experience.
 
-1. **`AuraSync.bat`**: Double-click this to open the **Control Center**.
-   - **⚡ Start**: Launches AuraSync silently in the background.
-   - **🛠️ Setup**: Automatically configures AuraSync to run every time your PC turns on.
-   - **🛑 Stop**: Instantly terminates the background service.
-   - **🌐 Visualizer**: Direct link to your live dashboard.
-
----
-
-## 🎨 Zero-Config Visuals
-Unlike standard Discord presence apps, AuraSync uses **Dynamic Metadata Injection**.
-- **Live Album Art**: Automatically fetches and displays the high-res Spotify artwork on Discord.
-- **Animated Ambient Mode**: Open **`http://localhost:3333`** in any browser for a full-screen, glassmorphism visualizer with animated blobs and pulsating art.
-- **Interactive Live Wallpaper**: Point any live wallpaper software (like Lively Wallpaper) to the localhost link for a truly interactive, music-reactive desktop experience.
+- **🔇 Ad-Free Everywhere**: No more interruptions. Advanced **Fidelity Shielding** (Network) and **Continuity Management** (API) ensure your music never stops for a commercial again.
+- **🔓 Infinite Skips**: Standard Spotify restricts your freedom. AuraSync Elite gives you **Unlimited Skips** and **Unlimited Continuous Flux**.
+- **🎯 Working Seek Bar**: The greyed-out seek bar in the Spotify app is now functional. Use the **Shadow Scrubber** to jump to any part of any song directly inside the app.
+- **📥 Master Audio Archive**: Every song you listen to is automatically preserved into a **High-Definition Local Archive** in the **`library/`** folder (`Artist/Album/Song.mp3`).
+- **📊 Root Playlist Mirroring**: Your Spotify playlists are automatically mirrored into organized folders at the project root (**`/Playlists/PlaylistName/`**).
+- **🛡️ Elite Process Guard**: Advanced multi-instance protection. Automatically terminates old versions to save your system RAM (No more resource leaks).
+- **🔍 Instant "Find Song" Search**: Use the **`find_song.bat`** tool to locate any track in your archives (`library` or `Playlists`) in seconds.
 
 ---
 
-## 💎 The AuraSync Advantage
-AuraSync isn't just a status updater; it's a **Freedom Engine**.
+## 🔄 The Phantom Trifecta
+Designed for zero-friction optimization:
 
-- **Unlock Premium Power**: When paired with external plugins (like bypass extensions), AuraSync lets you skip music without limits and play any song on-demand—even on Spotify Free.
-- **True Offline Listening**: Every song you play is automatically downloaded to your `library/` folder with full metadata. Whether you lose internet or Spotify goes down, your music stays with you.
-- **Invisible Proxy**: Broadcast a high-fidelity Discord presence while keeping your system usage at near-zero.
+1. **`AuraSync.bat`**: The "Go" button. One-click to activate all Elite features and start the invisible background engine.
+2. **`find_song.bat`**: Your library navigator. Find any song instantly by name across all archives.
+3. **`relogin.bat`**: The session refresher. Fast-reset for account switching or credential updates.
+4. **`uninstall.bat`**: The system restorer. Safely reverts Spotify to its restricted "Free" state.
+
+---
+
+## 💎 Comparison: Standard vs. AuraSync Elite
+
+| Feature | Spotify Free | **AuraSync Elite** |
+| :--- | :---: | :---: |
+| **Advertisements** | 📢 Interruptive | ✅ **Silent Continuity** |
+| **Skip Limits** | 🔒 6 per hour | ✅ **Unlimited Flux** |
+| **Seeking (In-App)** | ❌ Disabled | ✅ **Shadow Scrubber** |
+| **Offline Playback** | ❌ Online Only | ✅ **High-Def Archiving** |
+| **Operation** | ◽ Standard | ✅ **100% Invisible** |
 
 ---
 
-## 🔮 Future Roadmap
-- [ ] **Mobile Sync Companion**: Sync your PC library to your mobile device over local Wi-Fi.
-- [x] **Personal Listening Intelligence**: Chronological history and play count tracking (Implemented ✅)
-- [ ] **Custom Plugin API**: Allow developers to build their own "AESTHETIC" presence layouts.
-- [ ] **Global Leaderboards**: See which AuraSync users have the most diverse listening habits.
-- [ ] **AI-Powered Discovery**: Intelligent local library sorting based on your mood.
-- [ ] **Advanced Logging**: Detailed system and activity logs for debugging and insights.
+## 🚀 60-Second Activation
+1. **Config**: Rename `.env.example` to `.env` and enter your Spotify Client ID/Secret.
+2. **Launch**: Right-click `AuraSync.bat` and **Run as Administrator**.
+3. **Ascend**: Experience the ultimate Spotify transformation.
 
 ---
-*AuraSync: Set it once, enjoy forever.*
-**Ready for Publication. Powered by AuraSync Pro Experience.**
+**Bringing Absolute Freedom to Your Audio Stream. Powered by AuraSync Elite Pro.**

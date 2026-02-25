@@ -20,4 +20,8 @@ Desktop.ini
 
 # AuraSync specific
 library/
+Playlists/
 aurasync_data/
+sync_debug.log
+.aura_lock
+.seek_signal

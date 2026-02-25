@@ -59,11 +59,7 @@ if exist "%SPOTIFY_DATA%" (
     echo  [!] Spotify data folder not found. Skipping cache purge.
 )
 
-echo.
 echo  🛡️  AuraShield is now ACTIVE.
 echo  ------------------------------------------
-echo  NOTE: Spotify has been closed to apply changes. 
-echo  Please restart Spotify now.
-echo.
-pause
+timeout /t 2 >nul
 exit /b

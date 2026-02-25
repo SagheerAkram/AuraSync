@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 setlocal
 set "VERSION=1.2.0"
 title AuraSync Control Center

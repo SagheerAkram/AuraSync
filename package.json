@@ -1,0 +1,31 @@
+{
+    "name": "aurasync",
+    "version": "1.0.0",
+    "description": "The premium, fully automatic background music daemon that syncs your life with Spotify. Powered by AuraSync.",
+    "main": "dist/index.js",
+    "scripts": {
+        "start": "node dist/index.js",
+        "dev": "ts-node src/index.ts",
+        "build": "tsc"
+    },
+    "dependencies": {
+        "axios": "^1.13.5",
+        "discord-rpc": "^4.0.1",
+        "dotenv": "^16.4.5",
+        "express": "^5.2.1",
+        "node-id3": "^0.2.9",
+        "sanitize-filename": "^1.6.3",
+        "sharp": "^0.34.5",
+        "spotify-web-api-node": "^5.0.2",
+        "wallpaper": "^7.2.1",
+        "yt-dlp-exec": "^1.0.2"
+    },
+    "devDependencies": {
+        "@types/discord-rpc": "^4.0.10",
+        "@types/express": "^5.0.6",
+        "@types/node": "^20.12.7",
+        "@types/spotify-web-api-node": "^5.0.11",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.4.5"
+    }
+}

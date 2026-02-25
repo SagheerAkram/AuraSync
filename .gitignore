@@ -1,0 +1,23 @@
+# Node.js
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment Variables & Tokens
+.env
+spotify-tokens.json
+
+# IDEs
+.vscode/
+.idea/
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# AuraSync specific
+library/
+aurasync_data/

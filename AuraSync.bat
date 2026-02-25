@@ -20,46 +20,28 @@ if %errorlevel% equ 0 (
     echo  [ ] STATUS: INACTIVE
 )
 echo.
-echo  1. ⚡ START AURASYNC (Background Mode)
+echo  1. ⚡ START AURASYNC (Background + Auto-Startup)
 echo  2. 🛑 STOP AURASYNC
-echo  3. 🛠️ CONFIGURE AUTO-STARTUP
-echo  4. 🌐 OPEN LIVE VISUALIZER (localhost:3333)
-echo  5. 📂 VIEW LOGS
-echo  6. 🔄 FORCE SYNC ^& REPAIR (Clears tokens ^& Resyncs)
-echo  7. 🐛 START IN DEBUG MODE (Visible Window)
-echo  8. ❌ EXIT
+echo  3. 🌐 OPEN LIVE VISUALIZER (localhost:3333)
+echo  4. 📂 VIEW LOGS
+echo  5. 🔄 FORCE SYNC ^& REPAIR (Clears tokens ^& Resyncs)
+echo  6. 🐛 START IN DEBUG MODE (Visible Window)
+echo  7. ❌ EXIT
 echo.
-set /p choice="Select an option [1-8]: "
+set /p choice="Select an option [1-7]: "
 
 if "%choice%"=="1" goto START_APP
 if "%choice%"=="2" goto STOP_APP
-if "%choice%"=="3" goto SETUP_STARTUP
-if "%choice%"=="4" goto OPEN_WEB
-if "%choice%"=="5" goto VIEW_LOGS
-if "%choice%"=="6" goto REPAIR_APP
-if "%choice%"=="7" goto DEBUG_APP
-if "%choice%"=="8" exit
+if "%choice%"=="3" goto OPEN_WEB
+if "%choice%"=="4" goto VIEW_LOGS
+if "%choice%"=="5" goto REPAIR_APP
+if "%choice%"=="6" goto DEBUG_APP
+if "%choice%"=="7" exit
 goto MENU
 
 :START_APP
 echo.
-echo  Starting AuraSync in shadow mode...
-start "" wscript "%~dp0bin\run_hidden.vbs"
-echo  AuraSync is now monitoring in the background. Exiting...
-timeout /t 3 >nul
-exit
-
-:STOP_APP
-echo.
-echo  Terminating AuraSync background process...
-taskkill /f /fi "WINDOWTITLE eq AuraSync_Daemon*" /im node.exe >nul 2>&1
-echo  Done.
-timeout /t 2 >nul
-goto MENU
-
-:SETUP_STARTUP
-echo.
-echo  Configuring unblockable Windows Startup task...
+echo  Configuring persistent background service...
 set "STARTUP_FOLDER=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup"
 set "STARTUP_VBS=%STARTUP_FOLDER%\AuraSyncStartup.vbs"
 
@@ -72,9 +54,21 @@ echo WshShell.CurrentDirectory = "%~dp0" >> "%STARTUP_VBS%"
 echo WshShell.Run chr^(34^) ^& "%~dp0bin\start.bat" ^& Chr^(34^), 0 >> "%STARTUP_VBS%"
 echo Set WshShell = Nothing >> "%STARTUP_VBS%"
 
-echo  Success! AuraSync will now launch automatically on boot.
+echo  Starting AuraSync in shadow mode...
+start "" wscript "%~dp0bin\run_hidden.vbs"
+echo.
+echo  Success! AuraSync is now running ^& set to launch on boot.
 timeout /t 3 >nul
+exit
+
+:STOP_APP
+echo.
+echo  Terminating AuraSync background process...
+taskkill /f /fi "WINDOWTITLE eq AuraSync_Daemon*" /im node.exe >nul 2>&1
+echo  Done.
+timeout /t 2 >nul
 goto MENU
+
 
 :REPAIR_APP
 echo.
